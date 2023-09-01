@@ -12,11 +12,13 @@
 /* ********************************************* */
 /* globale variabelen die je gebruikt in je game */
 /* ********************************************* */
-var xPosities = [];
-var yPosities = [];
-var speedX = [];
-var speedY = [];
-const BREEDTE = 66.666666;
+let mensen = []
+
+// var xPosities = [];
+// var yPosities = [];
+// var speedX = [];
+// var speedY = [];
+//const BREEDTE = 66.666666;
 
 
 
@@ -33,14 +35,24 @@ function setup() {
   // Maak een canvas (rechthoek) waarin je je speelveld kunt tekenen
   createCanvas(1280, 720);
 
-  // initialiseer waarden
-  for(let i = 0; i < 5; i++){
-  xPosities.push(width / 2);               // midden van de breedte van het canvas
-  yPosities.push(height / 2);              // midden van de hoogte van het canvas
-  speedX.push(random(-10, 10));      // random waarde tussen -5 en 5
-  speedY.push(random(-10, 10)); 
-  console.log(xPosities.length) 
-  }    // 👆
+  for (var teller = 0; teller < 420; teller++) {
+    // we moeten ze niet te dicht bij de rand tekenen
+    // om geen problemen met stuiteren te krijgen
+    var ruimteTotRand = 50;
+    
+    // creëer random positie en snelheid
+    var randomX = random(ruimteTotRand, width - ruimteTotRand);
+    var randomY = random(ruimteTotRand, height - ruimteTotRand);
+    var randomSpeedX = random(-5, 5);
+    var randomSpeedY = random(-5, 5);
+  
+    // maak nieuw mensobject
+    var nieuwMens = new Mens(randomX, randomY, randomSpeedX, randomSpeedY, 20);
+    
+    // voeg mensobject toe aan array
+    mensen.push(nieuwMens)
+  }
+     // 👆
 }
 
 /**
@@ -56,21 +68,53 @@ function draw() {
   noStroke;
   fill(255, 255, 255);
 
-  for(let i = 0; i < xPosities.length; i++){
-  rect(xPosities[i], yPosities[i], BREEDTE, BREEDTE);
+  for(let i = 0; i < mensen.length; i++){
+  mensen[i].show()
 
   // update positie
-  xPosities[i] = xPosities[i] + speedX[i];
-  yPosities[i] = yPosities[i] + speedY[i];
+  mensen[i].update()
+  }
 
   // stuiter evt. tegen de kanten
-  if (xPosities[i] <= 0 || xPosities[i] + BREEDTE >= width) {
-    speedX[i] = speedX[i] * -1;
-  }
+  // if (mensen[i].xPositie <= 0 || mensen[i].xPositie + BREEDTE >= width) {
+  //   mensen[i].speedX = mensen[i].speedX * -1;
+  // }
 
-  if (yPosities[i] <= 0 || yPosities[i] + BREEDTE >= height) {
-    speedY[i] = speedY[i] * -1;
-  }
+  // if (mensen[i].yPositie <= 0 || mensen[i].yPositie + BREEDTE >= height) {
+  //   mensen[i].speedY = mensen[i].speedY * -1;
+  // }
+
 }
 
+class Mens {
+  x;
+  y;
+  speedX;
+  speedY;
+  breedte;
+
+  constructor(newX, newY, newSpeedX, newSpeedY, breedte) {
+    this.x = newX;
+    this.y = newY;
+    this.speedX = newSpeedX;
+    this.speedY = newSpeedY;
+    this.breedte = breedte
+  }
+
+  show() {
+    fill(255)
+    rect(this.x, this.y, this.breedte, this.breedte)
+  }
+
+  update() {
+    this.x += this.speedX;
+    this.y +=this.speedY;
+    
+    if(this.x<=0 || this.x >= width-this.breedte){
+      this.speedX *= -1
+    }
+    if(this.y<=0 || this.y >= height-this.breedte){
+      this.speedY *= -1
+    }
+  }
 }
