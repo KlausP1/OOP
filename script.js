@@ -14,12 +14,6 @@
 /* ********************************************* */
 let actoren = []
 
-// var xPosities = [];
-// var yPosities = [];
-// var speedX = [];
-// var speedY = [];
-//const BREEDTE = 66.666666;
-
 
 
 /* ********************************************* */
@@ -68,7 +62,7 @@ function setup() {
     
     // voeg mensobject toe aan array
   }
-  for (var teller = 0; teller < 1; teller++) {
+  for (var teller = 0; teller < 5; teller++) {
     // we moeten ze niet te dicht bij de rand tekenen
     // om geen problemen met stuiteren te krijgen
     var ruimteTotRand = 50;
@@ -98,14 +92,19 @@ function draw() {
   // teken
   noStroke;
   fill(255, 255, 255);
-
+  let besmet = 0
   for(let i = 0; i < actoren.length; i++){
   actoren[i].show()
 
   // update positie
   actoren[i].update()
+    if(actoren[i].isBesmet) {
+      besmet ++
+    }
   }
-
+  text("Besmet: "+besmet, 50, 50);
+  text("Niet besmet: "+ (actoren.length-besmet), 50, 100);
+  //text("Besmetting procent: "+ ((actoren.length-besmet/actoren.length) * 100), 50, 150);
   // ga alle actoren langs
 for (var i = 0; i < actoren.length; i++) {
   var mensA = actoren[i];
@@ -139,27 +138,17 @@ if (mensA.isBesmet || mensB.isBesmet) {
 
 }
 
-class Mens {
-  // x;
-  // y;
-  // speedX;
-  // speedY;
-  // breedte;
-
-  constructor(newX, newY, newSpeedX, newSpeedY, breedte = 50, isBesmet = false) {
-    this.x = newX;
-    this.y = newY;
-    this.speedX = newSpeedX;
-    this.speedY = newSpeedY;
-    this.breedte = breedte
-    this.isBesmet = isBesmet
+class Actor {
+  constructor(x, y, speedX, speedY, breedte = 50, isBesmet = false){
+    this.x = x
+    this.y = y;
+    this.speedX = speedX;
+    this.speedY = speedY;
+    this.breete= breedte;
+    this.isBesmet = isBesmet;
   }
 
   show() {
-    fill(255)
-    if(this.isBesmet) {
-      fill(255, 0, 0)
-    }
     rect(this.x, this.y, this.breedte, this.breedte)
   }
 
@@ -207,6 +196,17 @@ class Mens {
   
     // stuur de teruggeefwaarde terug
     return overlappend;
+  }
+}
+
+class Mens extends Actor {
+  show() {
+    fill(255)
+    if(this.isBesmet) {
+      fill(255, 0, 0)
+    }
+    this.breedte = 50
+    super.show()
   }
 }
 
@@ -223,68 +223,13 @@ class Dokter extends Mens {
   }
 }
 
-class Kat {
-
-  constructor(newX, newY, newSpeedX, newSpeedY, breedte = 10, isBesmet = false) {
-    this.x = newX;
-    this.y = newY;
-    this.speedX = newSpeedX;
-    this.speedY = newSpeedY;
-    this.breedte = breedte
-    this.isBesmet = isBesmet
-  }
-
-  show() {
+class Kat extends Actor {
+   show() {
     fill(0, 0, 255)
     if(this.isBesmet) {
-      fill(255, 50, 50)
+      fill(255, 75, 75)
     }
-    rect(this.x, this.y, this.breedte, this.breedte)
-  }
-
-  update() {
-    this.x += this.speedX;
-    this.y +=this.speedY;
-    
-    if(this.x<=0 || this.x >= width-this.breedte){
-      this.speedX *= -1
-    }
-    if(this.y<=0 || this.y >= height-this.breedte){
-      this.speedY *= -1
-    }
-  }
-
-  isOverlappend(andereMens) {
-    // zet teruggeefwaarde standaard op false
-    var overlappend = false;
-  
-    // zet teruggeefwaarde op true als er een overlap is
-    if ( (this.x >= andereMens.x &&
-          this.x <= andereMens.x + andereMens.breedte &&
-          this.y >= andereMens.y &&
-          this.y <= andereMens.y + andereMens.breedte)
-            ||
-          (this.x+this.breedte >= andereMens.x &&
-          this.x+this.breedte <= andereMens.x + andereMens.breedte &&
-          this.y >= andereMens.y &&
-          this.y <= andereMens.y + andereMens.breedte)
-            ||
-          (this.x >= andereMens.x &&
-          this.x <= andereMens.x + andereMens.breedte &&
-          this.y+this.breedte >= andereMens.y &&
-          this.y+this.breedte <= andereMens.y + andereMens.breedte)
-            ||
-          (this.x+this.breedte >= andereMens.x &&
-          this.x+this.breedte <= andereMens.x + andereMens.breedte &&
-          this.y+this.breedte >= andereMens.y &&
-          this.y+this.breedte <= andereMens.y + andereMens.breedte)
-          /* VUL HIER ZELF LATER AAN VOOR DE ANDERE HOEKEN*/
-        ) {
-  
-      overlappend = true;
-    }
-  
-    // stuur de teruggeefwaarde terug
-    return overlappend;
+    this.breedte = 10;
+    super.show()
   }
 }
