@@ -104,7 +104,7 @@ function draw() {
   }
   text("Besmet: "+besmet, 50, 50);
   text("Niet besmet: "+ (actoren.length-besmet), 50, 100);
-  //text("Besmetting procent: "+ ((actoren.length-besmet/actoren.length) * 100), 50, 150);
+  text("Besmetting procent: "+ round(((actoren.length-besmet)/actoren.length) * 100), 50, 150);
   // ga alle actoren langs
 for (var i = 0; i < actoren.length; i++) {
   var mensA = actoren[i];
